@@ -49,12 +49,12 @@ const styles = StyleSheet.create({
         elevation: 5,
         borderRadius: 10,
         backgroundColor: Colors.white,
-        height: 300,
+        height: 330,
         margin: 20
     },
     imageContainer: {
         width: '100%',
-        height: '60%',
+        height: '65%',
         borderTopLeftRadius: 10,
         borderTopRightRadius: 10,
         overflow: 'hidden'
@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
     },
     name: {
         fontSize: 18,
-        marginVertical: 4
+        marginVertical: 2
     },
     price: {
         fontSize: 14,
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        height: '25%',
+        height: '20%',
         paddingHorizontal: 20
     }
 });

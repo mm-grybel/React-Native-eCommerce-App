@@ -8,3 +8,5 @@ class Product {
         this.imageUrl = imageUrl;
     }
 }
+
+export default Product;

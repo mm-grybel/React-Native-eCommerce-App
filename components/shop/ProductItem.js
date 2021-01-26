@@ -16,7 +16,8 @@ const ProductItem = props => {
                 <Image 
                     style={styles.image}
                     //source={require('../../assets/products/p1.jpg')}
-                    source={{uri: props.imageUrl}} 
+                    //source={{uri: props.imageUrl}} 
+                    source={props.image}
                 />
             </View>
             <View style={styles.details}>

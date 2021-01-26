@@ -4,15 +4,36 @@ import { useSelector } from 'react-redux';
 
 import ProductItem from '../../components/shop/ProductItem';
 
+const getProductImages = (productId) => {
+    switch (productId) {
+        case 'p1':
+            return require('../../assets/products/p1.jpg');
+        case 'p2':
+            return require('../../assets/products/p2.jpg');
+        case 'p3':
+            return require('../../assets/products/p3.jpg');
+        case 'p4':
+            return require('../../assets/products/p4.jpg');
+        case 'p5':
+            return require('../../assets/products/p5.jpg');
+        case 'p6':
+            return require('../../assets/products/p6.jpg');
+        default:
+            return require('../../assets/products/default.jpeg');
+    }
+};
+
 const ProductsScreen = props => {
     const products = useSelector(state => state.products.availableProducts);
+    
     return (
         <FlatList 
             keyExtractor={item => item.id}
             data={products}
             renderItem={itemData =>( 
                 <ProductItem 
-                    image={itemData.item.imageUrl} 
+                    image={getProductImages(itemData.item.id)}
+                    //image={itemData.item.imageUrl} 
                     name={itemData.item.name} 
                     price={itemData.item.price} 
                     onViewDetail={() => {}} 

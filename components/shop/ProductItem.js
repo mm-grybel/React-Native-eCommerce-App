@@ -4,37 +4,51 @@ import {
     Text, 
     Image, 
     Button, 
-    StyleSheet
+    TouchableOpacity,
+    TouchableNativeFeedback,
+    Platform,
+    StyleSheet,
 } from 'react-native';
 
 import Colors from '../../constants/Colors';
 
 const ProductItem = props => {
+    let TouchableComp = TouchableOpacity;
+
+    if (Platform.OS === 'android' && Platform.Version >= 21) {
+        TouchableComp = TouchableNativeFeedback;
+    }
     return (
         <View style={styles.product}>
-            <View style={styles.imageContainer}>
-                <Image 
-                    style={styles.image}
-                    //source={require('../../assets/products/p1.jpg')}
-                    //source={{uri: props.imageUrl}} 
-                    source={props.image}
-                />
-            </View>
-            <View style={styles.details}>
-                <Text style={styles.name}>{props.name}</Text>
-                <Text style={styles.price}>€{props.price.toFixed(2)}</Text>
-            </View>
-            <View style={styles.actions}>
-                <Button 
-                    color={Colors.maroon}
-                    title="View Details" 
-                    onPress={props.onViewDetail}
-                />
-                <Button 
-                    color={Colors.salem}
-                    title="Add to Cart"
-                    onPress={props.onAddToCart}
-                />
+            <View style={styles.touchable}>
+                <TouchableComp onPress={props.onViewDetail} useForeground>
+                    <View>
+                        <View style={styles.imageContainer}>
+                            <Image 
+                                style={styles.image}
+                                //source={require('../../assets/products/p1.jpg')}
+                                //source={{uri: props.imageUrl}} 
+                                source={props.image}
+                            />
+                        </View>
+                        <View style={styles.details}>
+                            <Text style={styles.name}>{props.name}</Text>
+                            <Text style={styles.price}>€{props.price.toFixed(2)}</Text>
+                        </View>
+                        <View style={styles.actions}>
+                            <Button 
+                                color={Colors.maroon}
+                                title="View Details" 
+                                onPress={props.onViewDetail}
+                            />
+                            <Button 
+                                color={Colors.salem}
+                                title="Add to Cart"
+                                onPress={props.onAddToCart}
+                            />
+                        </View>
+                    </View>
+                </TouchableComp> 
             </View>
         </View>
     );
@@ -51,6 +65,10 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.white,
         height: 330,
         margin: 20
+    },
+    touchable: {
+        borderRadius: 10,
+        overflow: 'hidden'
     },
     imageContainer: {
         width: '100%',

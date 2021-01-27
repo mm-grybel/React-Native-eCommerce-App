@@ -1,17 +1,22 @@
 import React, { useState } from 'react';
 import { createStore, combineReducers } from 'redux';
 import { Provider } from 'react-redux';
+// import { composeWithDevTools } from 'redux-devtools-extension';
 import AppLoading from 'expo-app-loading';
 import * as Font from 'expo-font';
 
 import productsReducer from './store/reducers/products';
+import cartReducer from './store/reducers/cart';
 import ShopNavigator from './navigation/ShopNavigator';
 
 const rootReducer = combineReducers({
-  products: productsReducer
+  products: productsReducer,
+  cart: cartReducer
 });
 
-const store = createStore(rootReducer);
+const store = createStore(rootReducer); // for Prod
+// BELOW - USE FOR DEVELOPMENT ONLY, FOR PRODUCTION - USE THE ONE ABOVE
+// const store = createStore(rootReducer, composeWithDevTools()); // for Development only
 
 const fetchFonts = () => {
   return Font.loadAsync({

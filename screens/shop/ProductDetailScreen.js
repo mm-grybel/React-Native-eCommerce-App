@@ -7,9 +7,10 @@ import {
     Button,
     StyleSheet
 } from 'react-native';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 import Colors from '../../constants/Colors';
+import * as cartActions from '../../store/actions/cart';
 
 const getProductImages = (productId) => {
     switch (productId) {
@@ -36,6 +37,8 @@ const ProductDetailScreen = props => {
         state.products.availableProducts.find(product => product.id === productId)
     );
 
+    const dispatch = useDispatch();
+
     return (
         <ScrollView>
             <Image 
@@ -46,7 +49,9 @@ const ProductDetailScreen = props => {
                 <Button 
                     color={Colors.maroon} 
                     title="Add to Cart" 
-                    onPress={() => {}} 
+                    onPress={() => {
+                        dispatch(cartActions.addToCart(selectedProduct));
+                    }} 
                 />
             </View>
             <Text style={styles.price}>€{selectedProduct.price.toFixed(2)}</Text>

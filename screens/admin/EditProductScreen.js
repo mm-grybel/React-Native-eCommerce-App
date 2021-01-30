@@ -5,6 +5,7 @@ import {
     View, 
     ScrollView, 
     Platform, 
+    Alert,
     StyleSheet 
 } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
@@ -21,11 +22,18 @@ const EditProductScreen = props => {
     const dispatch = useDispatch();
 
     const [name, setName] = useState(editedProduct ? editedProduct.name : '');
+    const [nameIsValid, setNameIsValid] = useState(false);
     const [price, setPrice] = useState('');
     const [description, setDescription] = useState(editedProduct ? editedProduct.description : '');
     const [imageUrl, setImageUrl] = useState(editedProduct ? editedProduct.imageUrl : '');
 
     const submitHandler = useCallback(() => {
+        if (!nameIsValid) {
+            Alert.alert('Invalid input', 'Please check the errors in the form.', [
+                { text: 'OK' }
+            ]);
+            return;
+        }
         if (editedProduct) {
             dispatch(
                 productActions.updateProduct(productId, name, description, imageUrl)
@@ -44,6 +52,15 @@ const EditProductScreen = props => {
         props.navigation.setParams({ submit: submitHandler });
         }, [submitHandler]);
 
+    const nameChangeHandler = text => {
+        if (text.trim().length > 0) {  // trim() removes whitespace from both sides of a string
+            setNameIsValid(false);
+        } else {
+            setNameIsValid(true);
+        }
+        setName(text);
+    };
+
     return (
         <ScrollView>
             <View style={styles.form}>
@@ -52,8 +69,15 @@ const EditProductScreen = props => {
                     <TextInput 
                         style={styles.input} 
                         value={name} 
-                        onChangeText={text => setName(text)} 
+                        onChangeText={nameChangeHandler} 
+                        keyboardType="default"
+                        autoCapitalize="sentences"
+                        autoCorrect
+                        returnKeyType="next"
+                        onEndEditing={() => console.log('onEndEditing') }
+                        onSubmitEditing={() => console.log('onSubmitEditing')}
                     />
+                    {!nameIsValid && <Text>Please enter a valid product name.</Text>}
                 </View>
                 <View style={styles.formControl}>
                     <Text style={styles.label}>Image URL</Text>
@@ -69,7 +93,8 @@ const EditProductScreen = props => {
                         <TextInput 
                             style={styles.input} 
                             value={price} 
-                            onChangeText={text => setPrice(text)} 
+                            onChangeText={text => setPrice(text)}
+                            keyboardType="decimal-pad" 
                         />
                     </View>
                 )}

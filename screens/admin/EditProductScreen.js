@@ -8,30 +8,40 @@ import {
     StyleSheet 
 } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 import CustomHeaderButton from '../../components/UI/CustomHeaderButton';
+import * as productActions from '../../store/actions/products';
 
 const EditProductScreen = props => {
     const productId = props.navigation.getParam('productId');
     const editedProduct = useSelector(state => 
         state.products.ownerProducts.find(product => product.productId === productId)
     );
+    const dispatch = useDispatch();
 
     const [name, setName] = useState(editedProduct ? editedProduct.name : '');
-    const [imageUrl, setImageUrl] = useState(editedProduct ? editedProduct.imageUrl : '');
     const [price, setPrice] = useState('');
     const [description, setDescription] = useState(editedProduct ? editedProduct.description : '');
+    const [imageUrl, setImageUrl] = useState(editedProduct ? editedProduct.imageUrl : '');
 
     const submitHandler = useCallback(() => {
-        console.log('Submitting!');
-    }, []);
+        if (editedProduct) {
+            dispatch(
+                productActions.updateProduct(productId, name, description, imageUrl)
+            );
+        } else {
+            dispatch(
+                // we need to convert the price from string to a number by
+                // adding a + sign, that is: +price
+                productActions.createProduct(name, +price, description, imageUrl)
+            );
+        }
+    }, [dispatch, productId, name, price, description, imageUrl]);
     
     useEffect(() => {
-        props.navigation.setParams({ 
-            submit: submitHandler });
-        }, [submitHandler]
-    );
+        props.navigation.setParams({ submit: submitHandler });
+        }, [submitHandler]);
 
     return (
         <ScrollView>
@@ -87,7 +97,7 @@ EditProductScreen.navigationOptions = navigationData => {
                 <Item 
                     title="Save"
                     iconName={Platform.OS === 'android' ? 'md-checkmark' : 'ios-checkmark'}
-                    onPress={() => {submitProduct}}
+                    onPress={submitProduct}
                 />
             </HeaderButtons>
         )

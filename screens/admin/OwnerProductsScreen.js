@@ -1,12 +1,12 @@
 import React from 'react';
 import { Button, FlatList, Platform } from 'react-native';
-import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { useSelector, useDispatch } from 'react-redux';
+import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 
 import ProductItem from '../../components/shop/ProductItem';
-import * as shoppingCartActions from '../../store/actions/shopping-cart';
 import CustomHeaderButton from '../../components/UI/CustomHeaderButton';
 import Colors from '../../constants/Colors';
+import * as productsActions from '../../store/actions/products';
 
 const getProductImages = (productId) => {
     switch (productId) {
@@ -27,54 +27,52 @@ const getProductImages = (productId) => {
     }
 };
 
-const ProductsScreen = props => {
-    const products = useSelector(state => state.products.availableProducts);
+const OwnerProductsScreen = props => {
+    const ownerProducts = useSelector(state => 
+        state.products.ownerProducts
+    );
     const dispatch = useDispatch();
 
-    const selectItemHandler = (id, name) => {
-        props.navigation.navigate('ProductDetail', {
-            productId: id,
-            productName: name
-        });
+    const editProductHandler = productId => {
+        props.navigation.navigate('EditProduct', { productId: productId });
     };
-    
+
     return (
-        <FlatList 
+        <FlatList
+            data={ownerProducts}
             keyExtractor={item => item.productId}
-            data={products}
-            renderItem={itemData =>( 
+            renderItem={itemData => (
                 <ProductItem 
                     image={getProductImages(itemData.item.productId)}
-                    //image={itemData.item.imageUrl} 
                     name={itemData.item.name} 
                     price={itemData.item.price} 
                     onSelect={() => {
-                        selectItemHandler(itemData.item.productId, itemData.item.productName);
+                        editProductHandler(itemData.item.productId);
                     }}
                 >
                     <Button 
                         color={Colors.maroon}
-                        title="View Details" 
+                        title="Edit" 
                         onPress={() => {
-                            selectItemHandler(itemData.item.productId, itemData.item.productName);
+                            editProductHandler(itemData.item.productId);
                         }}
                     />
                     <Button 
                         color={Colors.salem}
-                        title="Add to Cart"
+                        title="Delete"
                         onPress={() => {
-                            dispatch(shoppingCartActions.addToShoppingCart(itemData.item));
+                            dispatch(productsActions.deleteProduct(itemData.item.productId));
                         }}
                     />
                 </ProductItem>
-            )}
+            )} 
         />
     );
 };
 
-ProductsScreen.navigationOptions = navigationData => {
+OwnerProductsScreen.navigationOptions = navigationData => {
     return {
-        headerTitle: 'All Products',
+        headerTitle: 'Your Products',
         headerLeft: () => (
             <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
                 <Item 
@@ -89,10 +87,10 @@ ProductsScreen.navigationOptions = navigationData => {
         headerRight: () => (
             <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
                 <Item 
-                    title="Cart"
-                    iconName={Platform.OS === 'android' ? 'md-cart' : 'ios-cart'}
+                    title="Add"
+                    iconName={Platform.OS === 'android' ? 'md-create' : 'ios-create'}
                     onPress={() => {
-                        navigationData.navigation.navigate('ShoppingCart');
+                        navigationData.navigation.navigate('EditProduct');
                     }}
                 />
             </HeaderButtons>
@@ -100,4 +98,4 @@ ProductsScreen.navigationOptions = navigationData => {
     };
 };
 
-export default ProductsScreen;
+export default OwnerProductsScreen;

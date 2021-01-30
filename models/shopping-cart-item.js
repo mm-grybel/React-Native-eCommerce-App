@@ -1,4 +1,4 @@
-class CartItem {
+class ShoppingCartItem {
     constructor(productName, productPrice, quantity, totalAmount) {
         this.productName = productName;
         this.productPrice = productPrice;
@@ -7,4 +7,4 @@ class CartItem {
     }
 }
 
-export default CartItem;
+export default ShoppingCartItem;

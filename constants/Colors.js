@@ -8,5 +8,6 @@ export default {
     christi: '#6a950e',
     maroon: '#860202',
     salem: '#039343',
-    kimberly: '#786ea1'
+    kimberly: '#786ea1',
+    monza: '#cf000f'
 };

@@ -44,9 +44,16 @@ export const fetchProducts = () => {
 };
 
 export const deleteProduct = productId => {
-    return {
-        type: DELETE_PRODUCT,
-        productId: productId
+    return async dispatch => {
+
+        // here - execute any async code you want, before the dispatch below
+        await fetch(
+            `https://rn-ecommerce-app-283fe-default-rtdb.firebaseio.com/products/${productId}.json`, {
+            method: 'DELETE'
+        });
+
+        // this will only be dispatched once the above operations are done
+        dispatch({ type: DELETE_PRODUCT, productId: productId });
     };
 };
 
@@ -87,14 +94,32 @@ export const createProduct = (name, price, description, imageUrl) => {
 };
   
 export const updateProduct = (productId, name, description, imageUrl) => {
-    return {
-        type: UPDATE_PRODUCT,
-        productId: productId,
-        productData: { // price should not be editable!
-            name,
-            description,
-            imageUrl
-        }
+    return async dispatch => {
+
+        // here - execute any async code you want, before the dispatch below
+        await fetch(
+            `https://rn-ecommerce-app-283fe-default-rtdb.firebaseio.com/products/${productId}.json`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                name,
+                description,
+                imageUrl
+            })
+        });
+
+        // this will only be dispatched once the above operations are done
+        dispatch({
+            type: UPDATE_PRODUCT,
+            productId: productId,
+            productData : { // price should not be editable!
+                name,
+                description,
+                imageUrl
+            }
+        });
     };
 };
   

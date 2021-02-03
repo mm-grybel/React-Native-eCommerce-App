@@ -57,6 +57,19 @@ const ProductsScreen = props => {
         loadProducts();
     }, [dispatch, loadProducts]);
 
+    useEffect(() => {
+        const willFocusSub = props.navigation.addListener('willFocus', () => {
+            loadProducts();
+        })
+        // ALTERNATIVELY:
+        // props.navigation.addListener('willFocus', loadProducts);
+
+        // return - a cleanup function
+        return () => {
+            willFocusSub.remove();
+        };
+    }, [loadProducts]);
+
     const selectItemHandler = (id, name) => {
         props.navigation.navigate('ProductDetail', {
             productId: id,

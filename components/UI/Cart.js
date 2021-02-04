@@ -5,7 +5,7 @@ import Colors from '../../constants/Colors';
 
 const Cart = props => {
     return (
-        <View style={styles.cart}>
+        <View style={{...styles.cart, ...props.style}}>
             {props.children}
         </View>
     );

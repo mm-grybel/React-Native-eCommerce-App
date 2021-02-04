@@ -1,4 +1,4 @@
-import React, { useReducer, useCallback } from 'react';
+import React, { useState, useReducer, useCallback } from 'react';
 import { 
     View,
     ScrollView,
@@ -40,6 +40,8 @@ const formReducer = (state, action) => {
 };
 
 const AuthScreen = props => {
+    const [isSignUp, setIsSignUp] = useState(false);
+
     const dispatch = useDispatch();
 
     const [formState, dispatchFormState] = useReducer(formReducer, {
@@ -55,11 +57,20 @@ const AuthScreen = props => {
         formIsValid: false
     });
 
-    const signupHandler = () => {
-        dispatch(authActions.signup(
-            formState.inputValues.email,
-            formState.inputValues.password
-        ));
+    const authHandler = () => {
+        let action;
+        if (isSignUp) {
+            action = authActions.signup(
+                formState.inputValues.email,
+                formState.inputValues.password
+            );
+        } else {
+            action = authActions.signin(
+                formState.inputValues.email,
+                formState.inputValues.password
+            );
+        }
+        dispatch(action);
     };
 
     const inputChangeHandler = useCallback((inputIdentifier, inputValue, inputValidity) => {
@@ -108,16 +119,18 @@ const AuthScreen = props => {
                         />
                         <View style={styles.buttonContainer}>
                             <Button 
-                                title="Login"
+                                title={isSignUp ? 'Sign Up' : 'Sign In'}
                                 color={Colors.maroon}
-                                onPress={signupHandler}
+                                onPress={authHandler}
                             />
                         </View>
                         <View style={styles.buttonContainer}>
                             <Button 
-                                title="Switch to Sign Up"
+                                title={`Switch to ${isSignUp ? 'Sign In' : 'Sign Up'}`}
                                 color={Colors.salem}
-                                onPress={() => {}}
+                                onPress={() => {
+                                    setIsSignUp(previousState => !previousState);
+                                }}
                             />
                         </View>
                     </ScrollView>

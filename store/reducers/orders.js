@@ -9,10 +9,10 @@ export default (state = initialState, action) => {
     switch (action.type) {
         case PLACE_ORDER:
             const newOrder = new Order(
-                new Date().toDateString(),  // a timestamp used as an ID for now
+                action.orderData.orderId,
                 action.orderData.items,
                 action.orderData.totalAmount,
-                new Date()
+                action.orderData.date
             );
             return {
                 ...state,

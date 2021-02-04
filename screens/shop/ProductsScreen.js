@@ -13,7 +13,7 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import ProductItem from '../../components/shop/ProductItem';
 import * as shoppingCartActions from '../../store/actions/shopping-cart';
-import * as productActions from '../../store/actions/products';
+import * as productsActions from '../../store/actions/products';
 import CustomHeaderButton from '../../components/UI/CustomHeaderButton';
 import Colors from '../../constants/Colors';
 
@@ -38,23 +38,28 @@ const getProductImages = (productId) => {
 
 const ProductsScreen = props => {
     const [isLoading, setIsLoading] = useState(false);
+    const [isRefreshing, setIsRefreshing] = useState(false);
     const [error, setError] = useState();
+
     const products = useSelector(state => state.products.availableProducts);
     const dispatch = useDispatch();
 
     const loadProducts = useCallback(async () => {
         setError(null);
-        setIsLoading(true);
+        setIsRefreshing(true);
         try {
-            await dispatch(productActions.fetchProducts());
+            await dispatch(productsActions.fetchProducts());
         } catch (err) {
             setError(err.message);
         }
-        setIsLoading(false);
-    }, [dispatch, setIsLoading, setError]);
+        setIsRefreshing(false);
+    }, [dispatch, setIsRefreshing, setError]);
 
     useEffect(() => {
-        loadProducts();
+        setIsLoading(true);
+        loadProducts().then(() => {
+            setIsLoading(false);
+        });
     }, [dispatch, loadProducts]);
 
     useEffect(() => {
@@ -108,6 +113,8 @@ const ProductsScreen = props => {
     
     return (
         <FlatList 
+            onRefresh={loadProducts}
+            refreshing={isRefreshing}
             keyExtractor={item => item.productId}
             data={products}
             renderItem={itemData =>( 

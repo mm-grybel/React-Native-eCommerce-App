@@ -1,5 +1,12 @@
-import React from 'react';
-import { View, Text, FlatList, Button, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { 
+    View, 
+    Text, 
+    FlatList, 
+    Button,
+    ActivityIndicator, 
+    StyleSheet 
+} from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 
 import Colors from '../../constants/Colors';
@@ -8,6 +15,8 @@ import * as shoppingCartActions from '../../store/actions/shopping-cart';
 import * as ordersActions from '../../store/actions/orders';
 
 const ShoppingCartScreen = props => {
+    const [isLoading, setIsLoading] = useState(false);
+
     const shoppingCartTotalAmount = useSelector(state => state.shoppingCart.totalAmount);
     const shoppingCartIems = useSelector(state => {
         const modifiedShoppingCartItems = [];
@@ -26,6 +35,12 @@ const ShoppingCartScreen = props => {
     });
     const dispatch = useDispatch();
 
+    const placeOrderHandler = async () => {
+        setIsLoading(true);
+        await dispatch(ordersActions.placeOrder(shoppingCartIems, shoppingCartTotalAmount));
+        setIsLoading(false);
+    };
+
     return (
         <View style={styles.screen}>
             <View style={styles.summary}>
@@ -33,14 +48,16 @@ const ShoppingCartScreen = props => {
                     Total:{' '} 
                     <Text style={styles.amount}>€{Math.round(shoppingCartTotalAmount.toFixed(2) * 100) / 100}</Text>
                 </Text>
-                <Button 
-                    color={Colors.christi} 
-                    title="Place Order" 
-                    disabled={shoppingCartIems.length === 0} 
-                    onPress={() => {
-                        dispatch(ordersActions.placeOrder(shoppingCartIems, shoppingCartTotalAmount));
-                    }}
-                />
+                {isLoading ? (
+                    <ActivityIndicator size="small" color={Colors.maroon} />
+                ) : (
+                    <Button 
+                        color={Colors.christi} 
+                        title="Place Order" 
+                        disabled={shoppingCartIems.length === 0} 
+                        onPress={placeOrderHandler}
+                    />
+                )}
             </View>
             <FlatList 
                 data={shoppingCartIems}

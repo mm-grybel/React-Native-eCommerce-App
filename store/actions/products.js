@@ -47,13 +47,22 @@ export const deleteProduct = productId => {
     return async dispatch => {
 
         // here - execute any async code you want, before the dispatch below
-        await fetch(
-            `https://rn-ecommerce-app-283fe-default-rtdb.firebaseio.com/products/${productId}.json`, {
-            method: 'DELETE'
-        });
+        try {
+            const response = await fetch(
+                `https://rn-ecommerce-app-283fe-default-rtdb.firebaseio.com/products/${productId}.json`, {
+                method: 'DELETE'
+            });
 
-        // this will only be dispatched once the above operations are done
-        dispatch({ type: DELETE_PRODUCT, productId: productId });
+            if (!response.ok) {
+                throw new Error('Something went wrong.');
+            }
+
+            // this will only be dispatched once the above operations are done
+            dispatch({ type: DELETE_PRODUCT, productId: productId });
+        } catch (err) {
+            // send to a custom analytics server, etc.
+            throw err;
+        }
     };
 };
 
@@ -97,29 +106,38 @@ export const updateProduct = (productId, name, description, imageUrl) => {
     return async dispatch => {
 
         // here - execute any async code you want, before the dispatch below
-        await fetch(
-            `https://rn-ecommerce-app-283fe-default-rtdb.firebaseio.com/products/${productId}.json`, {
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                name,
-                description,
-                imageUrl
-            })
-        });
+        try {
+            const response = await fetch(
+                `https://rn-ecommerce-app-283fe-default-rtdb.firebaseio.com/products/${productId}.json`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name,
+                    description,
+                    imageUrl
+                })
+            });
 
-        // this will only be dispatched once the above operations are done
-        dispatch({
-            type: UPDATE_PRODUCT,
-            productId: productId,
-            productData : { // price should not be editable!
-                name,
-                description,
-                imageUrl
+            if (!response.ok) {
+                throw new Error('Something went wrong.');
             }
-        });
+
+            // this will only be dispatched once the above operations are done
+            dispatch({
+                type: UPDATE_PRODUCT,
+                productId: productId,
+                productData : { // price should not be editable!
+                    name,
+                    description,
+                    imageUrl
+                }
+            });
+        } catch (err) {
+            // send to a custom analytics server, etc.
+            throw err;
+        }
     };
 };
   

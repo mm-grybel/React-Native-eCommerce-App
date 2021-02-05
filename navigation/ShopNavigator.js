@@ -1,8 +1,9 @@
 import React from 'react';
-import { Platform } from 'react-native';
+import { View, Button, Platform, SafeAreaView } from 'react-native';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
-import { createDrawerNavigator } from 'react-navigation-drawer';
+import { createDrawerNavigator, DrawerItems } from 'react-navigation-drawer';
+import { useDispatch } from 'react-redux';
 import { Ionicons } from '@expo/vector-icons';
 
 import ProductsScreen from '../screens/shop/ProductsScreen';
@@ -14,6 +15,7 @@ import EditProductScreen from '../screens/admin/EditProductScreen';
 import AuthScreen from '../screens/user/AuthScreen';
 import StartupScreen from '../screens/main/StartupScreen';
 import Colors from '../constants/Colors';
+import * as authActions from '../store/actions/auth';
 
 const defaultNaOptions = {
     headerStyle: {
@@ -27,7 +29,6 @@ const defaultNaOptions = {
     },
     headerTintColor: Platform.OS === 'android' ? Colors.white : Colors.maroon
 };
-
 
 const ProductsNavigator = createStackNavigator(
     {
@@ -95,6 +96,24 @@ const ShopNavigator = createDrawerNavigator(
     {
         contentOptions: {
             activeTintColor: Colors.maroon
+        },
+        contentComponent: props => {
+            const dispatch = useDispatch();
+            return (
+                <View style={{flex: 1, paddingTop: 20}}>
+                    <SafeAreaView forceInset={{top: 'always', horizontal: 'never'}}>
+                        <DrawerItems {...props} />
+                        <Button 
+                            title="Sign Out" 
+                            color={Colors.maroon}
+                            onPress={() => {
+                                dispatch(authActions.signout());
+                                props.navigation.navigate('Auth');
+                            }} 
+                        />
+                    </SafeAreaView>
+                </View>
+            );
         }
     }
 );

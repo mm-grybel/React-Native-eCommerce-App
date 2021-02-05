@@ -44,12 +44,12 @@ export const fetchProducts = () => {
 };
 
 export const deleteProduct = productId => {
-    return async dispatch => {
-
+    return async (dispatch, getState) => {
         // here - execute any async code you want, before the dispatch below
+        const token = getState().auth.token;
         try {
             const response = await fetch(
-                `https://rn-ecommerce-app-283fe-default-rtdb.firebaseio.com/products/${productId}.json`, {
+                `https://rn-ecommerce-app-283fe-default-rtdb.firebaseio.com/products/${productId}.json?auth=${token}`, {
                 method: 'DELETE'
             });
 
@@ -67,11 +67,11 @@ export const deleteProduct = productId => {
 };
 
 export const createProduct = (name, price, description, imageUrl) => {
-    return async dispatch => {
-
+    return async (dispatch, getState) => {
         // here - execute any async code you want, before the dispatch below
+        const token = getState().auth.token;
         const response = await fetch(
-            'https://rn-ecommerce-app-283fe-default-rtdb.firebaseio.com/products.json', {
+            `https://rn-ecommerce-app-283fe-default-rtdb.firebaseio.com/products.json?auth=${token}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -103,12 +103,15 @@ export const createProduct = (name, price, description, imageUrl) => {
 };
   
 export const updateProduct = (productId, name, description, imageUrl) => {
-    return async dispatch => {
+    return async (dispatch, getState) => {
+        // console.log(getState());
+
+        const token = getState().auth.token;
 
         // here - execute any async code you want, before the dispatch below
         try {
             const response = await fetch(
-                `https://rn-ecommerce-app-283fe-default-rtdb.firebaseio.com/products/${productId}.json`, {
+                `https://rn-ecommerce-app-283fe-default-rtdb.firebaseio.com/products/${productId}.json?auth=${token}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json'

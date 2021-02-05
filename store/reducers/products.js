@@ -1,4 +1,3 @@
-import PRODUCTS from '../../data/sample-data';
 import Product from '../../models/product';
 import { 
     DELETE_PRODUCT, 

@@ -149,4 +149,3 @@ export const updateProduct = (productId, name, description, imageUrl) => {
         }
     };
 };
-  

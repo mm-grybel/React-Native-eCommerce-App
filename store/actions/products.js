@@ -25,7 +25,7 @@ export const fetchProducts = () => {
                 loadedProducts.push(
                     new Product(
                         key,
-                        'c1',
+                        responseData[key].creatorId,
                         responseData[key].name,
                         responseData[key].price,
                         responseData[key].description,

@@ -4,12 +4,12 @@ export const PLACE_ORDER = 'PLACE_ORDER';
 export const SET_ORDERS = 'SET_ORDERS';
 
 export const fetchOrders = () => {
-    return async dispatch => {
-
+    return async (dispatch, getState) => {
         // here - execute any async code you want, before the dispatch below
+        const userId = getState().auth.userId;
         try {
             const response = await fetch(
-                'https://rn-ecommerce-app-283fe-default-rtdb.firebaseio.com/orders/c1.json'
+                `https://rn-ecommerce-app-283fe-default-rtdb.firebaseio.com/orders/${userId}.json`
             );
 
             if (!response.ok) {
@@ -43,9 +43,10 @@ export const placeOrder = (shoppingCartItems, totalAmount) => {
     return async (dispatch, getState) => {
         const currentDate = new Date();
         const token = getState().auth.token;
+        const userId = getState().auth.userId;
         // here - execute any async code you want, before the dispatch below
         const response = await fetch(
-            `https://rn-ecommerce-app-283fe-default-rtdb.firebaseio.com/orders/c1.json?auth=${token}`, {
+            `https://rn-ecommerce-app-283fe-default-rtdb.firebaseio.com/orders/${userId}.json?auth=${token}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

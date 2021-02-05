@@ -6,9 +6,9 @@ export const UPDATE_PRODUCT = 'UPDATE_PRODUCT';
 export const SET_PRODUCTS = 'SET_PRODUCTS';
 
 export const fetchProducts = () => {
-    return async dispatch => {
-
+    return async (dispatch, getState) => {
         // here - execute any async code you want, before the dispatch below
+        const userId = getState().auth.userId;
         try {
             const response = await fetch(
                 'https://rn-ecommerce-app-283fe-default-rtdb.firebaseio.com/products.json'
@@ -35,7 +35,11 @@ export const fetchProducts = () => {
             }
 
             // this will only be dispatched once the above operations are done
-            dispatch({ type: SET_PRODUCTS, products: loadedProducts });
+            dispatch({ 
+                type: SET_PRODUCTS, 
+                products: loadedProducts,
+                userProducts: loadedProducts.filter(product => product.creatorId === userId)
+            });
         } catch (err) {
             // send to a custom analytics server, etc.
             throw err;
@@ -80,7 +84,8 @@ export const createProduct = (name, price, description, imageUrl) => {
                 name,
                 price,
                 description,
-                imageUrl
+                imageUrl,
+                creatorId: userId // creatorId is the id of the logged in user (userId)
             })
         });
 
@@ -96,7 +101,8 @@ export const createProduct = (name, price, description, imageUrl) => {
                 name,
                 price,
                 description,
-                imageUrl
+                imageUrl,
+                creatorId: userId // creatorId is the id of the logged in user (userId)
             }
         });
     };

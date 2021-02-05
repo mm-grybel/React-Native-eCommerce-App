@@ -8,9 +8,8 @@ import {
 } from '../actions/products';
 
 const initialState = {
-    availableProducts: PRODUCTS,
-    // below: products where the creator ID is the ID of the currently logged in user
-    ownerProducts: PRODUCTS.filter(product => product.creatorId === 'c1')
+    availableProducts: [],
+    ownerProducts: []
 };
 
 export default (state = initialState, action) => {
@@ -18,12 +17,12 @@ export default (state = initialState, action) => {
         case SET_PRODUCTS:
             return {
                 availableProducts: action.products,
-                ownerProducts: action.products.filter(product => product.creatorId === 'c1')
+                ownerProducts: action.userProducts
             };
         case CREATE_PRODUCT:
             const newProduct = new Product(
                 action.productData.productId,
-                'c1', // creatorId
+                action.productData.creatorId,
                 action.productData.name,
                 action.productData.price,
                 action.productData.description,

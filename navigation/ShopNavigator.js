@@ -108,7 +108,6 @@ const ShopNavigator = createDrawerNavigator(
                             color={Colors.maroon}
                             onPress={() => {
                                 dispatch(authActions.signout());
-                                props.navigation.navigate('Auth');
                             }} 
                         />
                     </SafeAreaView>

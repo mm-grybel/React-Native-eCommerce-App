@@ -3,11 +3,16 @@ import { AsyncStorage } from 'react-native';
 export const AUTHENTICATE = 'AUTHENTICATE';
 export const SIGNOUT = 'SIGNOUT';
 
-export const authenticate = (userId, token) => {
-    return {
-        type: AUTHENTICATE,
-        userId: userId,
-        token: token
+let timer;
+
+export const authenticate = (userId, token, tokenExpirationTime) => {
+    return dispatch => {
+        dispatch(setSignoutTimer(tokenExpirationTime));
+        dispatch({
+            type: AUTHENTICATE,
+            userId: userId,
+            token: token
+        });
     };
 };
 
@@ -45,7 +50,13 @@ export const signup = (email, password) => {
         const responseData = await response.json();
         console.log(responseData);
         
-        dispatch(authenticate(responseData.localId, responseData.token));
+        dispatch(
+            authenticate(
+                responseData.localId, 
+                responseData.token,
+                parseInt(responseData.expiresIn) * 1000
+            )
+        );
 
         const tokenExpirationDate = new Date(
             new Date().getTime() + parseInt(responseData.expiresIn) * 1000
@@ -90,7 +101,13 @@ export const signin = (email, password) => {
         const responseData = await response.json();
         console.log(responseData);
         
-        dispatch(authenticate(responseData.localId, responseData.token));
+        dispatch(
+            authenticate(
+                responseData.localId, 
+                responseData.token,
+                parseInt(responseData.expiresIn) * 1000
+            )
+        );
 
         const tokenExpirationDate = new Date(
             new Date().getTime() + parseInt(responseData.expiresIn) * 1000
@@ -100,7 +117,23 @@ export const signin = (email, password) => {
 };
 
 export const signout = () => {
+    clearSignoutTimer();
+    AsyncStorage.removeItem('userData');
     return { type: SIGNOUT };
+};
+
+const setSignoutTimer = expirationTime => {
+    return dispatch => {
+        timer = setTimeout(() => {
+            dispatch(signout());
+        }, expirationTime);
+    };
+};
+
+const clearSignoutTimer = () => {
+    if (timer) {
+        clearTimeout(timer);
+    }
 };
 
 const saveDataToStorage = (token, userId, tokenExpirationDate) => {

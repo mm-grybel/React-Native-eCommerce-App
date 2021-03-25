@@ -13,10 +13,10 @@ import authReducer from './store/reducers/auth';
 import NavigationContainer from './navigation/NavigationContainer';
 
 const rootReducer = combineReducers({
-  products: productsReducer,
-  shoppingCart: shoppingCartReducer,
-  orders: ordersReducer,
-  auth: authReducer
+    products: productsReducer,
+    shoppingCart: shoppingCartReducer,
+    orders: ordersReducer,
+    auth: authReducer
 });
 
 const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
@@ -25,29 +25,30 @@ const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
 // const store = createStore(rootReducer, composeWithDevTools()); // for Development only
 
 const fetchFonts = () => {
-  return Font.loadAsync({
-    'open-sans': require('./assets/fonts/OpenSans-Regular.ttf'),
-    'open-sans-bold': require('./assets/fonts/OpenSans-Bold.ttf')
-  });
+    return Font.loadAsync({
+        'open-sans': require('./assets/fonts/OpenSans-Regular.ttf'),
+        'open-sans-bold': require('./assets/fonts/OpenSans-Bold.ttf')
+    });
 };
 
 export default function App() {
-  const [fontLoaded, setFontLoaded] = useState(false);
-
-  if (!fontLoaded) {
+    const [fontLoaded, setFontLoaded] = useState(false);
+    
+    if (!fontLoaded) {
+        return (
+            <AppLoading 
+                startAsync={fetchFonts} 
+                onFinish={() => {
+                    setFontLoaded(true);
+                }}
+                onError={(err) => console.log}
+            />
+        );
+    }
+  
     return (
-      <AppLoading 
-        startAsync={fetchFonts} 
-        onFinish={() => {
-          setFontLoaded(true);
-        }}
-        onError={(err) => console.log}
-      />
+        <Provider store={store}>
+            <NavigationContainer />
+        </Provider>
     );
-  }
-  return (
-    <Provider store={store}>
-      <NavigationContainer />
-    </Provider>
-  );
 }
